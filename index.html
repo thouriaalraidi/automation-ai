@@ -1,0 +1,261 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+
+  <title>Automation AI</title>
+
+  <!-- تصميم التطبيق -->
+  <link rel="stylesheet" href="/style.css?v=20261017">
+
+  <!-- عرض رسائل الذكاء الاصطناعي بتنسيق آمن -->
+  <script
+    defer
+    src="https://cdn.jsdelivr.net/npm/marked@15.0.12/lib/marked.umd.js">
+  </script>
+
+  <script
+    defer
+    src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js">
+  </script>
+
+  <!-- تحديد حساب Google المسجل قبل تشغيل التطبيق -->
+  <script defer src="/api/auth/bootstrap.js"></script>
+
+  <!-- وظائف التطبيق -->
+
+
+<script defer src="/script.js?v=20261017"></script>
+</head>
+
+<body>
+
+<div class="app-shell" id="appShell">
+
+  <!-- =====================================
+       شريط التنقل السريع
+  ====================================== -->
+  <nav class="icon-rail" aria-label="التنقل السريع">
+
+    <button
+      id="railHome"
+      class="icon-button rail-home"
+      data-icon="panel"
+      type="button"
+      title="إظهار أو إخفاء القائمة">
+    </button>
+
+    <button
+      id="railNew"
+      class="icon-button"
+      data-icon="square-pen"
+      type="button"
+      title="محادثة جديدة">
+    </button>
+
+    <button
+      id="railSearch"
+      class="icon-button"
+      data-icon="search"
+      type="button"
+      title="البحث">
+    </button>
+
+    <button
+      id="railProjects"
+      class="icon-button"
+      data-icon="folder"
+      type="button"
+      title="المشاريع">
+    </button>
+
+    <button
+      id="railArchive"
+      class="icon-button"
+      data-icon="archive"
+      type="button"
+      title="الأرشيف">
+    </button>
+
+    <span class="rail-spacer"></span>
+
+    <button
+      id="railTheme"
+      class="icon-button"
+      data-icon="moon"
+      type="button"
+      title="تغيير المظهر">
+    </button>
+
+  </nav>
+
+
+  <!-- خلفية القائمة في شاشات الهاتف -->
+  <div
+    id="sidebarBackdrop"
+    class="sidebar-backdrop"
+    hidden>
+  </div>
+
+
+  <!-- =====================================
+       القائمة الجانبية
+  ====================================== -->
+  <aside class="sidebar" id="sidebar">
+
+    <!-- رأس القائمة -->
+    <div class="sidebar-top">
+
+      <div class="brand">
+        <span class="brand-mark">AI</span>
+        <strong>Automation AI</strong>
+      </div>
+
+      <!-- إنشاء محادثة -->
+      <button
+        id="newChatButton"
+        class="sidebar-primary"
+        type="button">
+
+        <span data-icon="square-pen"></span>
+        محادثة جديدة
+
+      </button>
+
+      <!-- البحث -->
+      <label class="search-box">
+
+        <span data-icon="search"></span>
+
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="البحث في المحادثات والمشاريع"
+          aria-label="البحث في المحادثات والمشاريع"
+          autocomplete="off">
+
+      </label>
+
+    </div>
+
+
+    <!-- المحادثات والمشاريع -->
+    <div
+      class="sidebar-list"
+      id="chatList">
+    </div>
+
+
+    <!-- أدوات القائمة -->
+    <div class="sidebar-footer">
+
+      <button
+        id="backupButton"
+        class="footer-button"
+        type="button">
+
+        <span data-icon="download"></span>
+        تصدير نسخة احتياطية
+
+      </button>
+
+      <button
+        id="themeButton"
+        class="footer-button"
+        type="button">
+
+        <span data-icon="moon"></span>
+        <span id="themeLabel">الوضع الغامق</span>
+
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <!-- =====================================
+       منطقة المحادثة الرئيسية
+  ====================================== -->
+  <main class="chat-main">
+
+    <!-- عنوان المحادثة -->
+    <header class="chat-header">
+
+      <div class="header-title">
+
+        <h1 id="currentChatTitle">
+          محادثة جديدة
+        </h1>
+
+        <small>
+          مساعد متخصص في تعليم الأتمتة
+        </small>
+
+      </div>
+
+      <!-- فتح القائمة في الهاتف -->
+      <button
+        id="mobileMenu"
+        class="icon-button mobile-menu"
+        data-icon="panel"
+        type="button"
+        title="فتح القائمة">
+      </button>
+
+    </header>
+
+
+    <!-- الرسائل -->
+    <section
+      class="messages"
+      id="messages"
+      aria-label="رسائل المحادثة"
+      aria-live="polite">
+    </section>
+
+
+    <!-- =====================================
+         كتابة وإرسال الرسائل
+    ====================================== -->
+    <div class="composer-area">
+
+      <form
+        id="chatForm"
+        class="composer"
+        autocomplete="off">
+
+        <textarea
+          id="question"
+          rows="1"
+          placeholder="اسألي عن الأتمتة..."
+          aria-label="اكتبي سؤالك عن الأتمتة"
+          required>
+        </textarea>
+
+        <button
+          id="sendButton"
+          class="send-button"
+          type="submit"
+          data-icon="arrow-up"
+          title="إرسال"
+          aria-label="إرسال الرسالة">
+        </button>
+
+      </form>
+
+      <p class="composer-hint">
+        Enter للإرسال · Shift + Enter لسطر جديد
+      </p>
+
+    </div>
+
+  </main>
+
+</div>
+
+</body>
+</html>

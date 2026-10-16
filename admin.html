@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة الإدارة | Automation AI</title>
+<style>
+:root{color-scheme:light}*{box-sizing:border-box}body{font:14px 'Segoe UI',Tahoma,Arial,sans-serif;background:#f7f7f7;color:#222;margin:0}main{max-width:1050px;margin:auto;padding:28px 18px}header{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}a{color:inherit}h1{font-size:24px;margin:0}.muted{color:#777;font-size:12px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:25px 0}.stat{border:1px solid #e6e6e6;border-radius:14px;background:#fff;padding:20px}.stat strong{display:block;font-size:30px;margin-top:8px}table{width:100%;border-collapse:collapse;background:#fff;font-size:13px}td,th{padding:13px;border-bottom:1px solid #ededed;text-align:right}section{overflow:auto;border:1px solid #e6e6e6;border-radius:14px}button{border:0;background:transparent;cursor:pointer;font:inherit;color:inherit} @media(max-width:600px){.stats{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main>
+<header><div><h1>إحصائيات Automation AI</h1><p class="muted">معلومات الحساب والاستخدام فقط — لا يتم تخزين الأسئلة أو الإجابات هنا.</p></div><div><a href="/">العودة للشات</a></div></header>
+<div class="stats">
+  <div class="stat"><span>المستخدمون المسجلون</span><strong id="users">—</strong></div>
+  <div class="stat"><span>النشطون خلال 7 أيام</span><strong id="active">—</strong></div>
+  <div class="stat"><span>إجمالي طلبات Gemini الناجحة</span><strong id="requests">—</strong></div>
+</div>
+<h2>المستخدمون</h2>
+<section><table><thead><tr><th>الاسم</th><th>البريد</th><th>آخر دخول (UTC)</th><th>مرات الدخول</th><th>الطلبات الناجحة</th></tr></thead><tbody id="rows"></tbody></table></section>
+<p class="muted" id="status">جاري تحميل البيانات...</p>
+</main>
+<script>
+(async()=>{const status=document.getElementById('status');try{const response=await fetch('/api/admin/stats',{credentials:'same-origin',cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();document.getElementById('users').textContent=data.summary.registered_users;document.getElementById('active').textContent=data.summary.active_last_7_days;document.getElementById('requests').textContent=data.summary.total_requests;const tbody=document.getElementById('rows');for(const user of data.users){const tr=document.createElement('tr');for(const value of [user.name,user.email,user.last_login_at,user.login_count,user.request_count]){const td=document.createElement('td');td.textContent=value??'—';tr.append(td)}tbody.append(tr)}status.textContent='آخر تحديث: '+new Date().toLocaleString('ar')}catch(error){status.textContent='تعذّر عرض الإحصائيات. تأكدي من تسجيل الدخول بحساب الإدارة.'}})();
+</script>
+</body></html>

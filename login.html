@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تسجيل الدخول | Automation AI</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100dvh;display:grid;place-items:center;padding:18px;background:#f6f6f6;color:#242424;font:15px "Segoe UI",Tahoma,Arial,sans-serif}
+.card{width:min(420px,100%);padding:36px;background:#fff;border:1px solid #e6e6e6;border-radius:22px;box-shadow:0 12px 35px #0000000c;text-align:center}
+.mark{display:grid;place-items:center;width:62px;height:62px;margin:0 auto 20px;border:1px solid #d9d9d9;border-radius:18px;font-size:20px;font-weight:700}
+h1{font-size:27px;margin:0 0 8px}p{color:#777;line-height:1.9;font-size:13px}.signin{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;margin-top:28px;padding:13px 16px;border:1px solid #dcdcdc;border-radius:12px;color:inherit;background:transparent;text-decoration:none;font-weight:600}.signin:hover{background:#f5f5f5}.signin svg{width:19px;height:19px}.note{margin-top:23px;font-size:11px}.error{color:#a33;display:none}
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="mark" aria-hidden="true">AI</div>
+  <h1>Automation AI</h1>
+  <p>مساعد ذكاء اصطناعي لتعلّم الأتمتة بطريقة بسيطة.</p>
+  <a class="signin" href="/auth/google">
+    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M21 12h-9v4h5"/></svg>
+    متابعة باستخدام حساب Google
+  </a>
+  <p class="error" id="loginError">تعذّر تسجيل الدخول. تحققي من إعدادات Google وجربي مرة ثانية.</p>
+  <p class="note">لا نعرض أسئلتك أو إجاباتك في لوحة الإحصائيات. تُرسل الرسائل إلى Gemini لمعالجة طلبك.</p>
+</main>
+<script>if(new URLSearchParams(location.search).has('error'))document.getElementById('loginError').style.display='block';</script>
+</body></html>
