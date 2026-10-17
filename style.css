@@ -1513,3 +1513,30 @@ svg {
     animation-iteration-count: 1 !important;
   }
 }
+/* Language settings */
+.language-select {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--page);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Project controls */
+.side-row .side-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.side-row .side-control {
+  flex-shrink: 0;
+}
+
+#railSettings {
+  flex-shrink: 0;
+}

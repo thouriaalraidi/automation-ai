@@ -295,8 +295,8 @@
     const element = el("button", className);
 
     element.type = "button";
-    element.title = label;
-    element.setAttribute("aria-label", label);
+    element.title = t(label);
+    element.setAttribute("aria-label", t(label));
 
     if (iconName) element.append(icon(iconName));
 
@@ -320,7 +320,7 @@
       className
     );
 
-    element.append(el("span", "", text));
+    element.append(el("span", "", t(text)));
     return element;
   }
 
@@ -423,7 +423,7 @@ function toggleTheme() {
       }
 
       const option = labeledButton(
-        item.label,
+        t(item.label),
         item.icon,
         () => {
           closeMenu();
@@ -652,42 +652,46 @@ function toggleTheme() {
     const actions = el("div", "dialog-actions");
 
     actions.append(
-      labeledButton(
-        "نسخ",
-        "copy",
-        () => copyText(text),
-        "action-button"
-      ),
-
-      labeledButton(
-        "TXT",
-        "download",
-        () => fileDownload(
-          "automation-export.txt",
-          text
-        ),
-        "action-button"
-      ),
-
-      labeledButton(
-        "JSON",
-        "download",
-        () => fileDownload(
-          "automation-export.json",
-          JSON.stringify(
-            kind === "project"
-              ? { project: item, chats: group }
-              : { chat: item },
-            null,
-            2
-          ),
-          "application/json"
-        ),
-        "action-button"
-      )
-    );
+  labeledButton(
+    "نسخ النص",
+    "copy",
+    () => copyText(text),
+    "action-button"
+  ),
+  labeledButton(
+    "تصدير TXT",
+    "download",
+    () => fileDownload(
+      "automation-conversation.txt",
+      "\uFEFF" + text,
+      "text/plain;charset=utf-8"
+    ),
+    "action-button"
+  )
+);
 
     box.append(actions);
+  }
+
+
+  // ????? ???? ????????? ???
+  function exportAllText() {
+    const available = chats.filter(validChat);
+
+    if (!available.length) {
+      alert("?? ???? ??????? ???????.");
+      return;
+    }
+
+    const content = available
+      .map(transcript)
+      .join("\n\n========================\n\n");
+
+    fileDownload(
+      "automation-conversations.txt",
+      "\uFEFF" + content,
+      "text/plain;charset=utf-8"
+    );
   }
 
   function backupAll() {
@@ -1526,7 +1530,7 @@ function toggleTheme() {
   function heading(text, onAdd) {
     const section = el("div", "side-section");
 
-    section.append(el("span", "", text));
+    section.append(el("span", "", t(text)));
 
     if (onAdd) {
       section.append(button(
@@ -1643,7 +1647,7 @@ function toggleTheme() {
       row.append(pinned);
     }
 
-    row.append(toggle, plus, more);
+  row.append(plus, more, toggle);
     wrapper.append(row);
 
     if (expanded) {
@@ -1797,7 +1801,7 @@ function toggleTheme() {
 
       for (const [label, group] of groups) {
         ui.list.append(
-          el("div", "side-date", label)
+          el("div", "side-date", t(label))
         );
 
         group.forEach(chat => {
@@ -2350,6 +2354,235 @@ function toggleTheme() {
     }
   }
 
+  // إعدادات لغة واجهة المستخدم
+const LANGUAGE_KEY = `automationLanguage:${ACCOUNT_ID}`;
+
+let currentLanguage =
+  localStorage.getItem(LANGUAGE_KEY) === "en" ? "en" : "ar";
+
+const translations = {
+  "محادثة جديدة": "New Chat",
+  "المشاريع": "Projects",
+  "المحادثات": "Chats",
+  "الأرشيف": "Archive",
+  "الإعدادات": "Settings",
+  "البحث": "Search",
+  "لا توجد محادثات": "No conversations",
+  "تصدير نسخة احتياطية": "Export Backup",
+  "الوضع الغامق": "Dark Mode",
+  "الوضع الفاتح": "Light Mode",
+  "إرسال": "Send",
+  "نسخ النص": "Copy Text",
+  "تصدير TXT": "Export TXT",
+  "محادثة داخل المشروع": "New Project Chat",
+  "خيارات المشروع": "Project Options",
+  "خيارات المحادثة": "Chat Options",
+  "تغيير المظهر": "Change Theme",
+  "التطبيقات والأدوات": "Apps and Tools",
+  "الملحقات": "Plugins"
+};
+// ترجمة النصوص الأساسية للواجهة
+Object.assign(translations, {
+  "البحث": "Search",
+  "المشاريع": "Projects",
+  "مشروع جديد": "New Project",
+  "المثبتة": "Pinned",
+  "تثبيت المشروع": "Pin Project",
+  "تثبيت المحادثة": "Pin Chat",
+  "إلغاء التثبيت": "Unpin",
+  "المحادثات الأخيرة": "Recent Chats",
+  "المحادثات": "Chats",
+  "اليوم": "Today",
+  "أمس": "Yesterday",
+  "آخر 7 أيام": "Last 7 Days",
+  "محادثات سابقة": "Older Chats",
+  "لا توجد محادثات": "No Chats",
+  "لا توجد محادثات بعد": "No Chats Yet",
+  "لا توجد نتائج": "No Results",
+  "خيارات المشروع": "Project Options",
+  "خيارات المحادثة": "Chat Options",
+  "فتح المشروع": "Expand Project",
+  "إغلاق المشروع": "Collapse Project",
+  "محادثة داخل المشروع": "New Project Chat",
+  "تغيير الاسم": "Rename",
+  "تثبيت المحادثة": "Pin Chat",
+  "نقل إلى مشروع": "Move to Project",
+  "مشاركة / تصدير": "Share / Export",
+  "أرشفة": "Archive",
+  "حذف المحادثة": "Delete Chat",
+  "أرشفة المشروع": "Archive Project",
+  "حذف المشروع فقط": "Delete Project",
+  "إعدادات المشروع": "Project Settings",
+  "الإعدادات": "Settings",
+  "لغة الواجهة": "Interface Language",
+  "تسجيل الخروج": "Sign Out",
+  "نسخ النص": "Copy Text",
+  "تصدير TXT": "Export TXT",
+  "إلغاء": "Cancel",
+  "حفظ": "Save"
+});
+
+function t(text) {
+  return currentLanguage === "en"
+    ? (translations[text] || text)
+    : text;
+}
+
+
+  // AUTO_SAFE_TRANSLATION_V3
+  Object.assign(translations, {
+    "?????": "Search",
+    "????????": "Projects",
+    "????? ????": "New Project",
+    "???????": "Pinned",
+    "????? ???????": "Pin Project",
+    "????? ????????": "Pin Chat",
+    "????? ???????": "Unpin",
+    "????????? ???????": "Recent Chats",
+    "?????????": "Chats",
+    "?????": "Today",
+    "???": "Yesterday",
+    "??? 7 ????": "Last 7 Days",
+    "??????? ?????": "Older Chats",
+    "?? ???? ???????": "No Chats",
+    "?? ???? ??????? ???": "No Chats Yet",
+    "?? ???? ?????": "No Results",
+    "?????? ???????": "Project Options",
+    "?????? ????????": "Chat Options",
+    "??? ???????": "Expand Project",
+    "????? ???????": "Collapse Project",
+    "?????? ???? ???????": "New Project Chat",
+    "????? ?????": "Rename",
+    "??? ??? ?????": "Move to Project",
+    "?????? / ?????": "Share / Export",
+    "?????": "Archive",
+    "??? ????????": "Delete Chat",
+    "????? ???????": "Archive Project",
+    "??? ??????? ???": "Delete Project",
+    "??????? ???????": "Project Settings",
+    "?????????": "Settings",
+    "??? ???????": "Interface Language",
+    "????? ??????": "Sign Out",
+    "??? ????": "Copy Text",
+    "????? TXT": "Export TXT",
+    "?????": "Cancel",
+    "???": "Save",
+    "?????? ?????": "New Chat",
+    "?????? ????????": "Share Chat",
+    "?????? ???????": "Share Project",
+    "???": "Yesterday",
+    "???????": "Archive",
+    "????????? ????????": "Apps & Tools",
+    "????????": "Plugins"
+  });
+
+  function t(text) {
+    return currentLanguage === "en"
+      ? (translations[String(text)] || text)
+      : text;
+  }
+
+  function applyLanguage() {
+
+    if (ui.search) {
+      ui.search.placeholder = currentLanguage === "en"
+        ? "Search chats and projects..."
+        : "البحث في المحادثات والمشاريع";
+    }
+
+  document.documentElement.lang = currentLanguage;
+    document.documentElement.dir = currentLanguage === "en" ? "ltr" : "rtl";
+
+  const reverse = Object.fromEntries(
+    Object.entries(translations).map(([ar, en]) => [en, ar])
+  );
+
+  const convert = text => {
+    const value = text.trim();
+    if (currentLanguage === "en") {
+      return translations[value] || value;
+    }
+    return reverse[value] || value;
+  };
+
+  // ترجمة عناصر التحكم فقط، دون تغيير الرسائل أو أسماء المشاريع
+  const selectors = [
+    ".sidebar-primary",
+    ".sidebar-footer button",
+    ".side-control",
+    ".side-section button",
+    ".side-empty",
+    ".icon-rail button"
+  ];
+
+  document.querySelectorAll(selectors.join(",")).forEach(element => {
+    if (element.title) element.title = convert(element.title);
+    if (element.getAttribute("aria-label")) {
+      element.setAttribute(
+        "aria-label",
+        convert(element.getAttribute("aria-label"))
+      );
+    }
+
+    element.childNodes.forEach(node => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const original = node.textContent.trim();
+        if (translations[original] || reverse[original]) {
+          node.textContent = convert(original);
+        }
+      }
+    });
+
+    element.querySelectorAll("span").forEach(span => {
+      if (span.children.length === 0) {
+        span.textContent = convert(span.textContent);
+      }
+    });
+  });
+
+  const newChatTitle = $("currentChatTitle");
+  if (newChatTitle && ["محادثة جديدة", "New Chat"].includes(newChatTitle.textContent.trim())) {
+    newChatTitle.textContent =
+      currentLanguage === "en" ? "New Chat" : "محادثة جديدة";
+  }
+}
+
+function openSettings() {
+  const box = dialog(
+    currentLanguage === "ar" ? "الإعدادات" : "Settings"
+  );
+
+  const label = el(
+    "label",
+    "",
+    currentLanguage === "ar" ? "لغة الواجهة" : "Interface Language"
+  );
+
+  const select = el("select");
+  select.className = "language-select";
+
+  [
+    ["ar", "العربية"],
+    ["en", "English"]
+  ].forEach(([value, name]) => {
+    const option = el("option", "", name);
+    option.value = value;
+    select.append(option);
+  });
+
+  select.value = currentLanguage;
+
+  select.addEventListener("change", () => {
+    currentLanguage = select.value;
+    localStorage.setItem(LANGUAGE_KEY, currentLanguage);
+    box.close();
+    renderSidebar();
+    applyLanguage();
+  });
+
+  box.append(label, select);
+}
+
   // ==========================================
   // قائمة التطبيقات والأدوات
   // ==========================================
@@ -2472,6 +2705,21 @@ function toggleTheme() {
 
     // نقل زر تغيير المظهر
     rail.insertBefore(theme, spacer);
+
+    // ?? ????????? ?? ?????? ???????
+    if (!$("railSettings")) {
+      const settingsButton = button(
+        "?????????",
+        "settings",
+        openSettings
+      );
+
+      settingsButton.id = "railSettings";
+      settingsButton.className = "icon-button";
+
+      rail.insertBefore(settingsButton, spacer);
+    }
+
   }
 
   // ==========================================
@@ -2538,7 +2786,7 @@ function toggleTheme() {
 
   $("backupButton").addEventListener(
     "click",
-    backupAll
+    exportAllText
   );
 
   $("themeButton").addEventListener(
@@ -2574,6 +2822,7 @@ const savedTheme = localStorage.getItem("theme");
 setTheme(savedTheme === "dark" ? "dark" : "light");
 
   createNewChat();
+  applyLanguage();
 
   // إظهار خيار استعادة المحادثات القديمة عند الحاجة
   offerLegacyImportOnce();
